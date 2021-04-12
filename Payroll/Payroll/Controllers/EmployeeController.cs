@@ -16,24 +16,9 @@ namespace Payroll.Controllers
         [Route("GetEmployees")]
         public IEnumerable<Employee> Get()
         {
-            //Employee emp = new Employee();
-            //emp.Name = "Saumendra";
-            //emp.EmployeeType = 1;
-            //emp.BirthDate = Convert.ToDateTime("10/10/2019");
-            //emp.Salary = 1000.00M;
-
-            //DbContext.InsertEmployee(emp);
-            //Employee emp1 = new Employee();
-            //emp1.Name = "Saumendra P";
-            //emp1.EmployeeType = 2;
-            //emp1.BirthDate = Convert.ToDateTime("10/10/2019");
-            //emp1.Salary = 1000.00M;
-
-            //DbContext.InsertEmployee(emp1);
             APIResponse response = new APIResponse();
-            
 
-            return DbContext.GetEmployees();
+            return DbContext.GetEmployees(); ;
         }
 
         [HttpGet]
@@ -41,8 +26,15 @@ namespace Payroll.Controllers
         public APIResponse GetEmployeeDetails(int EmpId)
         {
             APIResponse response = new APIResponse();
-            response.Result = DbContext.GetEmployees();
-
+            try
+            {
+                response.Result = DbContext.GetEmployees();
+            }
+            catch (Exception ex)
+            {
+                response.Message = "Erro occored." + ex.Message;
+                response.Error = true;
+            }
             return response;
         }
         [HttpPost]
@@ -50,9 +42,18 @@ namespace Payroll.Controllers
         public APIResponse AddUser(Employee emp)
         {
             APIResponse response = new APIResponse();
-            if (DbContext.InsertEmployee(emp) == 1)
+            try
             {
-                response.Message = "Inserted successfully.";
+
+                if (DbContext.InsertEmployee(emp) == 1)
+                {
+                    response.Message = "Inserted successfully.";
+                }
+            }
+            catch(Exception ex)
+            {
+                response.Message = "Error occorred: "+ex.Message;
+                response.Error = true;
             }
             return response;
         }
